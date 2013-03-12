@@ -1,0 +1,5 @@
+h1. Rotary Stewart Platform for students
+
+Please visit "Marginally Clever":http://www.marginallyclever.com/ for more great robot goodness.
+
+Please visit "the wiki":https://github.com/MarginallyClever/RotaryStewartPlatform/wiki for installation, troubleshooting, and more.
