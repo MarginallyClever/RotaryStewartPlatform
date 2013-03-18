@@ -11,6 +11,7 @@
 // dan@marginallyclever.com 2011-06-21
 //------------------------------------------------------------------------------
 #include <Servo.h>
+#include "Vector3.h"
 
 
 //------------------------------------------------------------------------------
@@ -29,289 +30,6 @@
 #define AXIS3   (5)
 #define AXIS4   (6)
 #define AXIS5   (7)
-
-
-//------------------------------------------------------------------------------
-class Vector3 {
-public:
-  // these usions allow the Vector3 to be used as a color component
-  float x;
-  float y;
-  float z;
-
-public:
-  inline Vector3() {}
-
-  
-  inline Vector3( float xx, float yy, float zz ) {
-    x = xx;
-    y = yy;
-    z = zz;
-  }
-
-
-  inline Vector3( float v[ 3 ] ) {
-    x = v[ 0 ];
-    y = v[ 1 ];
-    z = v[ 2 ];
-  }
-
-  
-  ~Vector3() {};
-
-
-  inline Vector3 &MakeZero() {
-    x=0;
-    y=0;
-    z=0;
-
-    return *this;
-  }
-
-  
-  inline Vector3 &Set( float xx, float yy, float zz ) {
-    x = xx;
-    y = yy;
-    z = zz;
-
-    return *this;
-  }
-
-
-  inline Vector3 operator + () const {  // Unary negation
-    return Vector3(*this);
-  }
-
-
-  inline Vector3 operator - () const {  // Unary negation
-    return Vector3( -x, -y, -z );
-  }
-
-
-  inline Vector3 operator *= ( float v ) {  // assigned multiply by a float
-    x *= v;
-    y *= v;
-    z *= v;
-
-    return *this;
-  }
-
-
-  inline Vector3 operator /= ( float t ) {  // assigned division by a float
-    float v;
-
-    if( t == 0.0f )
-      v = 0;
-    else
-      v = 1.0f / t;
-
-    x *= v;
-    y *= v;
-    z *= v;
-
-    return *this;
-  }
-
-
-  inline Vector3 operator -= ( const Vector3 &v ) {  // assigned subtraction
-    x -= v.x;
-    y -= v.y;
-    z -= v.z;
-
-    return *this;
-  }
-
-
-  inline Vector3 operator += ( const Vector3 &v ) {  // assigned addition
-    x += v.x;
-    y += v.y;
-    z += v.z;
-
-    return *this;
-  }
-
-
-  inline Vector3 operator *= ( const Vector3 &v ) {  // assigned mult.
-    x *= v.x;
-    y *= v.y;
-    z *= v.z;
-
-    return *this;
-  }
-
-
-  inline Vector3 operator ^= ( const Vector3 &v ) {  // assigned cross product
-    float nx, ny, nz;
-    
-    nx = ( y * v.z - z * v.y );
-    ny =-( x * v.z - z * v.x );
-    nz = ( x * v.y - y * v.x );
-    x = nx;
-    y = ny;
-    z = nz;
-
-    return *this;
-  }
-
-
-  inline bool operator == ( const Vector3 &v ) const {
-    return ( fabs( x - v.x ) < 0.01f &&
-             fabs( y - v.y ) < 0.01f &&
-             fabs( z - v.z ) < 0.01f );
-  }
-
-
-  inline bool operator != ( const Vector3 &v ) const {
-    return ( fabs( x - v.x ) > 0.01f ||
-             fabs( y - v.y ) > 0.01f ||
-             fabs( z - v.z ) > 0.01f );
-  }
-
-
-// METHODS
-  inline float Length() const {
-    return (float)sqrt( *this | *this );
-  }
-
-
-  inline float LengthSquared() const {
-    return *this | *this;
-  }
-
-
-  inline void Normalize() {
-    float len, iLen;
-
-    len = Length();
-    if( !len ) iLen = 0;
-    else iLen = 1.0f / len;
-
-    x *= iLen;
-    y *= iLen;
-    z *= iLen;
-  }
-
-
-  inline float NormalizeLength() {
-    float len, iLen;
-
-    len = Length();
-    if( !len ) iLen = 0;
-    else iLen = 1.0f / len;
-
-    x *= iLen;
-    y *= iLen;
-    z *= iLen;
-
-    return len;
-  }
-
-
-  inline void ClampMin( float min ) {  // Clamp to minimum
-    if( x < min ) x = min;
-    if( y < min ) y = min;
-    if( z < min ) z = min;
-  }
-
-
-  inline void ClampMax( float max ) {  // Clamp to maximum
-    if( x > max ) x = max;
-    if( y > max ) y = max;
-    if( z > max ) z = max;
-  }
-
-
-  inline void Clamp( float min, float max ) {  // Clamp to range ]min,max[
-    ClampMin( min );
-    ClampMax( max );
-  }
-
-
-  // Interpolate between *this and v
-  inline void Interpolate( const Vector3 &v, float a ) {
-    float b( 1.0f - a );
-
-    x = b * x + a * v.x;
-    y = b * y + a * v.y;
-    z = b * z + a * v.z;
-  }
-
-
-  inline float operator | ( const Vector3 &v ) const {  // Dot product
-    return x * v.x + y * v.y + z * v.z;
-  }
-
-
-  inline Vector3 operator / ( float t ) const {  // vector / float
-    if( t == 0.0f )
-      return Vector3( 0, 0, 0 );
-
-    float s( 1.0f / t );
-
-    return Vector3( x * s, y * s, z * s );
-  }
-
-
-  inline Vector3 operator + ( const Vector3 &b ) const {  // vector + vector
-    return Vector3( x + b.x, y + b.y, z + b.z );
-  }
-
-
-  inline Vector3 operator - ( const Vector3 &b ) const {  // vector - vector
-    return Vector3( x - b.x, y - b.y, z - b.z );
-  }
-
-
-  inline Vector3 operator * ( const Vector3 &b ) const {  // vector * vector
-    return Vector3( x * b.x, y * b.y, z * b.z );
-  }
-
-
-  inline Vector3 operator ^ ( const Vector3 &b ) const {  // cross(a,b)
-    float nx, ny, nz;
-
-    nx =  y * b.z - z * b.y;
-    ny =  z * b.x - x * b.z;
-    nz =  x * b.y - y * b.x;
-
-    return Vector3( nx, ny, nz );
-  }
-
-
-  inline Vector3 operator * ( float s ) const {
-    return Vector3( x * s, y * s, z * s );
-  }
-
-
-  inline void Rotate( Vector3 &axis, float angle ) {
-	  float   sa = (float)sin( angle );
-    float   ca = (float)cos( angle );
-	  Vector3 axis2( axis );
-	  float   m[9];
-
-	  axis2.Normalize();
-
-	  m[ 0 ] = ca + (1 - ca) * axis2.x * axis2.x;
-	  m[ 1 ] = (1 - ca) * axis2.x * axis2.y - sa * axis2.z;
-	  m[ 2 ] = (1 - ca) * axis2.z * axis2.x + sa * axis2.y;
-	  m[ 3 ] = (1 - ca) * axis2.x * axis2.y + sa * axis2.z;
-	  m[ 4 ] = ca + (1 - ca) * axis2.y * axis2.y;
-	  m[ 5 ] = (1 - ca) * axis2.y * axis2.z - sa * axis2.x;
-	  m[ 6 ] = (1 - ca) * axis2.z * axis2.x - sa * axis2.y;
-	  m[ 7 ] = (1 - ca) * axis2.y * axis2.z + sa * axis2.x;
-	  m[ 8 ] = ca + (1 - ca) * axis2.z * axis2.z;
-
-          Vector3 src( *this );
-
-	  x = m[0] * src.x + m[1] * src.y + m[2] * src.z;
-	  y = m[3] * src.x + m[4] * src.y + m[5] * src.z;
-	  z = m[6] * src.x + m[7] * src.y + m[8] * src.z;
-  }
-
-  inline operator float *() {
-    return &this->x;
-  }
-};
 
 
 //------------------------------------------------------------------------------
@@ -357,13 +75,22 @@ public:
 
 
 //------------------------------------------------------------------------------
-static float shoulder_to_elbow=2.54f;  // cm
-static float elbow_to_wrist=18.5f;  // cm
+static float shoulder_to_elbow=1.6f;  // cm
+static float elbow_to_wrist=8.8f;  // cm
 
-static float ee_to_w_y=0.76962f;  // x relative to plane between servos
-static float ee_to_w_x=3.79984f;  // y relative to plane between servos
-static float c_to_s_x=4.99948f;  // shoulder x relative to plane between servos
-static float c_to_s_y=4.10032f;  // shoulder y relative to plane between servos
+// ee_to_w - end effector center to each wrist.
+// Imagine a plane that passes through all wrist joints, centered between them.
+// What is the X & Y on that plane to reach each a joint?
+// The software will flip & rotate to figure out the other 5.
+static float ee_to_w_y=0.4f;
+static float ee_to_w_x=2.15f;
+
+// c_to_s - base center to each shoulder (servo output gear).
+// Imagine a plane that passes through all shoulder joints, centered between them.
+// What is the X & Y on that plane to reach each a joint?
+// The software will flip & rotate to figure out the other 5.
+static float c_to_s_x=4.14f;
+static float c_to_s_y=1.28f;
 
 Hexapod hexapod;
 
@@ -409,7 +136,7 @@ void Hexapod::Setup() {
     armb.elbow_relative=armb.elbow-armb.shoulder;
   }
   this->default_height=bb;
-  this->endeffector.pos.z=bb;
+  this->endeffector.pos.z=0;
   this->endeffector.up.Set(0,0,1);
   this->endeffector.forward.Set(1,0,0);
   this->endeffector.left.Set(0,1,0);
@@ -438,23 +165,38 @@ void line(float x,float y,float z,float a,float b,float c) {
   Vector3 start_pos = hexapod.endeffector.pos;
   Vector3 start_ang = hexapod.endeffector.angle;
   Vector3 da, dp, ortho, w, wop, temp, p1, p2,n,r;
-  float r0,r1,d,hh;
+  float r0,r1,d,hh,dt;
   int i;
+  
+  target_pos.z+=hexapod.default_height;
+  start_pos.z+=hexapod.default_height;
 
   // @TODO: measure distance from start to destination
   // @TODO: divide by feed rate to get travel time
   float travel_time = 1.0;
 
+  Serial.print(F("START\n"));
+
   float start=millis()*0.001;
-  {
+  do {
     // Interpolate over travel time to move end effector
     float now = millis()*0.001;
-    float dt = ( now - start ) / travel_time;
+    dt = ( now - start ) / travel_time;
+    if(dt > 1) dt = 1;
 
-    hexapod.endeffector.pos = ( target_pos - start_pos ) * dt;
+    //Serial.print(now);
+    //Serial.print(F(" - "));
+    //Serial.print(start);
+    //Serial.print(F(" = "));
+    Serial.print(dt);
+    Serial.print(F("\t"));
+
+    hexapod.endeffector.pos = ( target_pos - start_pos ) * dt + start_pos;
 
     // roll pitch & yaw
-    da = ( target_ang - start_ang ) * dt * DEG2RAD;
+    da = ( target_ang - start_ang ) * dt + start_ang;
+    da *= DEG2RAD;
+    
     hexapod.endeffector.up.Set(0,0,1);
     hexapod.endeffector.forward.Set(1,0,0);
     hexapod.endeffector.left.Set(0,1,0);
@@ -550,29 +292,40 @@ void line(float x,float y,float z,float a,float b,float c) {
       // we don't care about elbow angle.  we could find it here if we needed it.
 
       // update servo
+      Serial.print(arm.angle);
+      Serial.print(F("\t"));
+      
       arm.angle = (arm.angle * arm.scale) * (500.0f/90.0f) + 1500.0f;
       if(arm.last_angle!=arm.angle) {
         arm.s.writeMicroseconds(arm.angle);
         arm.last_angle=arm.angle;
       }
     }
-  }
+    Serial.print(F("\n"));
+  } while( dt < 1 );
+  
+  hexapod.endeffector.pos = target_pos;
+  hexapod.endeffector.pos.z -= hexapod.default_height;
+
+  hexapod.endeffector.angle = target_ang;
+  
+  Serial.print(F("END\n"));
 }
 
 
 //------------------------------------------------------------------------------
 void processCommand() {
   if(!strncmp(buffer,"M114",4)) {
-    Serial.print(hexapod.endeffector.pos.x);                           Serial.print(F(", "));
-    Serial.print(hexapod.endeffector.pos.y);                           Serial.print(F(", "));
-    Serial.print(hexapod.endeffector.pos.z-hexapod.default_height);    Serial.print(F(" - "));
-    Serial.print(hexapod.endeffector.angle.x);                         Serial.print(F(", "));
-    Serial.print(hexapod.endeffector.angle.y);                         Serial.print(F(", "));
+    Serial.print(hexapod.endeffector.pos.x);       Serial.print(F(", "));
+    Serial.print(hexapod.endeffector.pos.y);       Serial.print(F(", "));
+    Serial.print(hexapod.endeffector.pos.z);       Serial.print(F(" - "));
+    Serial.print(hexapod.endeffector.angle.x);     Serial.print(F(", "));
+    Serial.print(hexapod.endeffector.angle.y);     Serial.print(F(", "));
     Serial.println(hexapod.endeffector.angle.z);
   } else if(!strncmp(buffer,"G00",3) || !strncmp(buffer,"G01",3)) {
     float xx=hexapod.endeffector.pos.x;
     float yy=hexapod.endeffector.pos.y;
-    float zz=hexapod.endeffector.pos.z-hexapod.default_height;
+    float zz=hexapod.endeffector.pos.z;
     float aa=hexapod.endeffector.angle.x;
     float bb=hexapod.endeffector.angle.y;
     float cc=hexapod.endeffector.angle.z;
@@ -591,7 +344,7 @@ void processCommand() {
       }
     }
     
-    line(xx,yy,zz+hexapod.default_height,aa,bb,cc);
+    line(xx,yy,zz,aa,bb,cc);
   }
 }
 
@@ -602,7 +355,7 @@ void setup() {
   Serial.println(F("Hello, World!  I am a Rotary Stewart Platform."));
   
   hexapod.Setup();
-  line(0,0,0,0,0,0);
+  //line(0,0,0,0,0,0);
 
   // setup receiving buffer
   sofar=0;
