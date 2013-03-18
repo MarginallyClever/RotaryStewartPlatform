@@ -345,20 +345,31 @@ void processCommand() {
     }
     
     line(xx,yy,zz,aa,bb,cc);
-  }
+  } else if(!strncmp(buffer,"HELP",4)) help();
+}
+
+
+//------------------------------------------------------------------------------
+void help() {
+  Serial.println(F("Hello, World!  I am a Rotary Stewart Platform."));
+  Serial.println(F("Type HELP; at any time to see this message."));
+  Serial.println(F("I unddrestand gcode commands:"));
+  Serial.println(F("G00 [ABCXYZ][number]; - move to the position & angle."));
+  Serial.println(F("M114; - state the current position & angle."));
 }
 
 
 //------------------------------------------------------------------------------
 void setup() {
   Serial.begin(BAUD);
-  Serial.println(F("Hello, World!  I am a Rotary Stewart Platform."));
-  
+
   hexapod.Setup();
-  //line(0,0,0,0,0,0);
 
   // setup receiving buffer
   sofar=0;
+  
+  // be helpful
+  help();
 }
 
 
