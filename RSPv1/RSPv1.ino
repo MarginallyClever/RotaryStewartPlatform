@@ -17,6 +17,10 @@
 //------------------------------------------------------------------------------
 // constants
 //------------------------------------------------------------------------------
+// Change this to your board type.
+#define BOARD_UNO
+//#define BOARD_MEGA
+
 #define TWOPI        (PI*2.0f)
 #define DEG2RAD      (PI/180.0f)
 #define RAD2DEG      (180.0f/PI)
@@ -24,12 +28,23 @@
 #define BAUD    (57600)
 #define MAX_BUF (64)
 
-#define AXIS0   (2)
-#define AXIS1   (3)
-#define AXIS2   (4)
-#define AXIS3   (5)
-#define AXIS4   (6)
-#define AXIS5   (7)
+
+#ifdef BOARD_UNO
+#define AXIS0   (11)
+#define AXIS1   (10)
+#define AXIS2   (9)
+#define AXIS3   (6)
+#define AXIS4   (5)
+#define AXIS5   (3)
+#endif
+#ifdef BOARD_MEGA
+#define AXIS0   (7)
+#define AXIS1   (6)
+#define AXIS2   (5)
+#define AXIS3   (4)
+#define AXIS4   (3)
+#define AXIS5   (2)
+#endif
 
 
 //------------------------------------------------------------------------------
@@ -76,7 +91,7 @@ public:
 
 //------------------------------------------------------------------------------
 static float shoulder_to_elbow=1.6f;  // cm
-static float elbow_to_wrist=8.8f;  // cm
+static float elbow_to_wrist=15.5/2.0;  // cm
 
 // ee_to_w - end effector center to each wrist.
 // Imagine a plane that passes through all wrist joints, centered between them.
@@ -115,12 +130,12 @@ void Hexapod::Setup() {
     ortho.x=-n.y;
     ortho.y=n.x;
     ortho.z=0;
-    arma.wrist_pos = n*ee_to_w_x - ortho*ee_to_w_y;
-    armb.wrist_pos = n*ee_to_w_x + ortho*ee_to_w_y;
-    arma.shoulder = n*c_to_s_x - ortho*c_to_s_y;
-    armb.shoulder = n*c_to_s_x + ortho*c_to_s_y;
-    arma.elbow = n*c_to_s_x - ortho*(c_to_s_y+shoulder_to_elbow);
-    armb.elbow = n*c_to_s_x + ortho*(c_to_s_y+shoulder_to_elbow);
+    arma.wrist_pos = n*ee_to_w_x + ortho*ee_to_w_y;
+    armb.wrist_pos = n*ee_to_w_x - ortho*ee_to_w_y;
+    arma.shoulder = n*c_to_s_x + ortho*c_to_s_y;
+    armb.shoulder = n*c_to_s_x - ortho*c_to_s_y;
+    arma.elbow = n*c_to_s_x + ortho*(c_to_s_y+shoulder_to_elbow);
+    armb.elbow = n*c_to_s_x - ortho*(c_to_s_y+shoulder_to_elbow);
     
     arma.wrist_relative=arma.wrist_pos;
     armb.wrist_relative=armb.wrist_pos;

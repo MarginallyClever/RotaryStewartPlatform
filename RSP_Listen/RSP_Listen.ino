@@ -1,31 +1,25 @@
 //------------------------------------------------------------------------------
-// Center for Rotary Stewart Platform
+// Test for Rotary Stewart Platform
 // dan@marginallycelver.com 2013-03-11
 //------------------------------------------------------------------------------
 // Copyright at end of file.
 // please see http://www.marginalyclever.com/ for more information.
 
 
-#include <Servo.h>
-
-
-Servo arm[6];
-
-
 void setup() {
   Serial.begin(57600);
-  Serial.println(F("Hello, World! Centering Servos..."));
-
-  int i;
-  for(i=0;i<6;++i) {
-    arm[i].attach(7-i);
-    arm[i].write( 90 );
-  }
 }
 
 
-void loop() {}
-
+void loop() {  
+  Serial.print(analogRead(0));  Serial.print('\t');
+  Serial.print(analogRead(1));  Serial.print('\t');
+  Serial.print(analogRead(2));  Serial.print('\t');
+  Serial.print(analogRead(3));  Serial.print('\t');
+  Serial.print(analogRead(4));  Serial.print('\t');
+  Serial.print(analogRead(5));  Serial.print('\n');
+  delay(100);
+}
 
 
 //------------------------------------------------------------------------------
