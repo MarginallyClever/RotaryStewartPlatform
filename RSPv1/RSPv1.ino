@@ -90,22 +90,22 @@ public:
 
 
 //------------------------------------------------------------------------------
-static float shoulder_to_elbow=1.6f;  // cm
-static float elbow_to_wrist=15.5/2.0;  // cm
+static float shoulder_to_elbow=1.6;  // cm
+static float elbow_to_wrist=9.5;  // cm
 
 // ee_to_w - end effector center to each wrist.
 // Imagine a plane that passes through all wrist joints, centered between them.
 // What is the X & Y on that plane to reach each a joint?
 // The software will flip & rotate to figure out the other 5.
-static float ee_to_w_y=0.4f;
-static float ee_to_w_x=2.15f;
+static float ee_to_w_y=0.4;
+static float ee_to_w_x=2.15;
 
 // c_to_s - base center to each shoulder (servo output gear).
 // Imagine a plane that passes through all shoulder joints, centered between them.
 // What is the X & Y on that plane to reach each a joint?
 // The software will flip & rotate to figure out the other 5.
-static float c_to_s_x=4.14f;
-static float c_to_s_y=1.28f;
+static float c_to_s_x=4.14;
+static float c_to_s_y=1.28;
 
 Hexapod hexapod;
 
